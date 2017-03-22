@@ -1,11 +1,21 @@
 #!/bin/sh
-rm log.txt
+sudo ifconfig wlan0 down
+sudo iwconfig wlan0 mode managed
+sudo ifconfig wlan0 up
+sudo iwconfig wlan0 channel 13
 sudo ifconfig wlan0 down
 sudo iwconfig wlan0 mode monitor
 sudo ifconfig wlan0 up
-sudo tcpdump -i wlan0 -n --time-stamp-precision=nano  -vvv> log.txt &
-sleep 1
-./main
-sleep 2
+sudo iwconfig wlan0 channel 13
+
+
+#sudo ./scanner.py &
+#sudo tcpdump -i wlan0 -n --time-stamp-precision=nano  -vvv -w capture.log "subtype cts or subtype rts" &
+sudo tcpdump -i wlan0 -n --time-stamp-precision=nano  -vvv -w capture.log &
+
+sleep 5
+sudo ./send_null.py
+sleep  5
 killall tcpdump
-cat log.txt 
+killall scanner.py
+#(\d{2}):(\d{2}):(\d{2}\.\d*).*RA:((Clear-To-Send)|(Request-To-Send))
